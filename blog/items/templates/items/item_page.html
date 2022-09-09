@@ -17,11 +17,13 @@
 
     <div class="p-2 mb-4 bg-light text-dark rounded-3 " style="border-style: ridge">
         <h1 class="display-6 fw-bold d-flex justify-content-around ">{{ page.title }}</h1>
+        
         {% if page.tags.count %}
+        
         <div class="row">
             <div class="col"></div>
             <div class="col-md-8">
-                <div>
+                <div class="">
                     {% for tag in page.tags.all %}
                     {# Loop through all the existing tags #}
                     <span class="badge fs-6 bg-secondary m-2">
@@ -51,29 +53,30 @@
                   
                 </div>
                 <div class="col-md-8 col-sm-10 ">
-                    <div class="card">
+                    <div class="card mt-5">
                         <div class="card-body">
                           <h4 class="card-title d-flex justify-content-center"> {{page.subject}}</h4>
                           <header class="pb-1  border-bottom"></header>
                           
                           {% for block in page.intro %}
     
-                                <div>
+                                <div class="pt-2">
                                     {{ block }}
                                 </div>
-                          {% endfor %}    
-                          <div>{{page.owner}}</div>                     
+                          {% endfor %} 
+                          <hr/>   
+                          <div>Authored by <b>{{page.owner}}</b> on {{ page.date }}</div>                     
                         </div>
                     </div>
                 </div>
             </div>
             <!-- MAIN ARTICLE STARTS-->
-            <header class="p-2  border-bottom"></header>
+            
             
 
-            <div class="accordion" id="accordionExample">
+            <div class="accordion mt-5" id="accordionExample">
                 {% for block in page.body %}
-                <div>
+                <div class="container-fluid">
                     {{ block }}
                 </div>
                 {% endfor %} 

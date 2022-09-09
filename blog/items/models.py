@@ -1,5 +1,5 @@
 from django.db import models
-
+import re
 # Create your models here.
 from wagtail.models import Page
 from wagtail.fields import RichTextField,StreamField
@@ -12,7 +12,7 @@ from modelcluster.contrib.taggit import ClusterTaggableManager
 from taggit.models import TaggedItemBase
 
 class ItemPageTag(TaggedItemBase):
-    content_object = ParentalKey('movies.ItemPage', on_delete=models.CASCADE, related_name='tagged_items')
+    content_object = ParentalKey('items.ItemPage', on_delete=models.CASCADE, related_name='tagged_items')
 
 class ItemIndexPage(Page):
     intro = RichTextField(blank=True)
@@ -27,28 +27,38 @@ class RatingBlockValue(blocks.StructValue):
     def nonrating(self):
         return 10-self['rating']
 
+
+
 class RatingBlock(blocks.StructBlock):
 
     rating = blocks.IntegerBlock(min_value=1,max_value=10)
     rate_comment = blocks.CharBlock(min_length=1,max_length=100)
 
     class Meta:
-        template = 'movies/rating.html'
+        template = 'items/rating.html'
         value_class = RatingBlockValue
+
+class SectionBlockValue(blocks.StructValue):
+    
+    @property
+    def nospecialtitle(self):
+
+        return ''.join(e for e in self['title'] if e.isalnum())
 
 class SectionBlock(blocks.StructBlock):
     title = blocks.CharBlock(min_length=1,max_length=100,help_text='section title')
     richcontent = blocks.RichTextBlock(max_length=10000)
     class Meta:
-        template = 'movies/section.html'
+        template = 'items/section.html'
+        value_class = SectionBlockValue
 
 class ItemPage(Page):
     date = models.DateField("Post date")
     intro = models.CharField(max_length=250)
-    subject = models.CharField(max_length=250,default='Movie')
+    subject = models.CharField(max_length=250)
     intro = StreamField([
         ('rating', RatingBlock()),
-        ('text', blocks.CharBlock(max_length=300)),
+        ('text', blocks.RichTextBlock(max_length=400)),
     ], use_json_field=True)
     body =  StreamField([
         ('section', SectionBlock()),   
