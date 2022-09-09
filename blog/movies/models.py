@@ -24,6 +24,7 @@ class MovieIndexPage(Page):
 class MoviePage(Page):
     date = models.DateField("Post date")
     intro = models.CharField(max_length=250)
+    subject = models.CharField(max_length=250,default='Movie')
     rating = models.IntegerField(null=True,blank=True,choices=[(i, i) for i in range(1, 11)])
     body = RichTextField(blank=True)
     tags = ClusterTaggableManager(through=MoviePageTag, blank=True)
@@ -46,7 +47,7 @@ class MoviePage(Page):
         FieldPanel('rating'),
         FieldPanel('body'),
         FieldPanel('feed_image'),
-        
+        FieldPanel('subject'),
         FieldPanel('tags'),
     ]
 
