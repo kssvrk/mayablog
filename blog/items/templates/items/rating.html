@@ -1,7 +1,7 @@
-<div class="row container-fluid ">
+<div class="row">
     <div class="col"></div>
     <div class="col-md-6">
-        <p class="fw-bold d-flex justify-content-center  pt-4" >
+        <p class="fw-bold d-flex justify-content-center" >
             {% with ''|center:value.rating as range %}
             {% for k in range %}
                 <i class="bi bi-emoji-laughing-fill theme-color m-icon" ></i>
@@ -13,10 +13,7 @@
             {% endfor %}
             {% endwith %}
         </p>
-        <p class=" d-flex justify-content-center container-fluid"> <b>Rating : {{value.rating}}/10 </b></p>
-        {% if value.rate_comment %}
-            <p class=" d-flex justify-content-center "> <b>{{value.rate_comment}} </b></p>
-        {% endif %}
+        <p class="d-flex justify-content-center"> <b>Rating : {{value.rating}}/10 </b></p>
     </div>
     <div class="col"></div>
 

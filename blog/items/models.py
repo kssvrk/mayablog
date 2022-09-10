@@ -11,15 +11,47 @@ from modelcluster.fields import ParentalKey
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from taggit.models import TaggedItemBase
 
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+
 class ItemPageTag(TaggedItemBase):
     content_object = ParentalKey('items.ItemPage', on_delete=models.CASCADE, related_name='tagged_items')
 
 class ItemIndexPage(Page):
+    
     intro = RichTextField(blank=True)
 
     content_panels = Page.content_panels + [
         FieldPanel('intro')
     ]
+
+    template = "items/item_index_page.html"
+
+    def get_context(self, request, *args, **kwargs):
+        """Adding custom stuff to our context."""
+        context = super().get_context(request, *args, **kwargs)
+        # Get all posts
+        all_posts = ItemPage.objects.live().public().order_by('-first_published_at').child_of(self)
+        #all_posts=self.get_children()
+        print(all_posts)
+        # Paginate all posts by 2 per page
+        paginator = Paginator(all_posts, 50)
+        # Try to get the ?page=x value
+        page = request.GET.get("page")
+        try:
+            # If the page exists and the ?page=x is an int
+            posts = paginator.page(page)
+        except PageNotAnInteger:
+            # If the ?page=x is not an int; show the first page
+            posts = paginator.page(1)
+        except EmptyPage:
+            # If the ?page=x is out of range (too high most likely)
+            # Then return the last page
+            posts = paginator.page(paginator.num_pages)
+
+        # "posts" will have child pages; you'll need to use .specific in the template
+        # in order to access child properties, such as youtube_video_id and subtitle
+        context["posts"] = posts
+        return context
 
 class RatingBlockValue(blocks.StructValue):
     
@@ -32,7 +64,7 @@ class RatingBlockValue(blocks.StructValue):
 class RatingBlock(blocks.StructBlock):
 
     rating = blocks.IntegerBlock(min_value=1,max_value=10)
-    rate_comment = blocks.CharBlock(min_length=1,max_length=100)
+    
 
     class Meta:
         template = 'items/rating.html'
@@ -54,11 +86,10 @@ class SectionBlock(blocks.StructBlock):
 
 class ItemPage(Page):
     date = models.DateField("Post date")
-    intro = models.CharField(max_length=250)
     subject = models.CharField(max_length=250)
     intro = StreamField([
         ('rating', RatingBlock()),
-        ('text', blocks.RichTextBlock(max_length=400)),
+        ('text', blocks.RichTextBlock(max_length=4000)),
     ], use_json_field=True)
     body =  StreamField([
         ('section', SectionBlock()),   

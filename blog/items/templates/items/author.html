@@ -1,0 +1,19 @@
+<table class="table " style="table-layout: fixed; ">
+    <tbody>
+        <tr>
+            <td style="text-align: right;">
+                <img src="{{page.owner.wagtail_userprofile.avatar.url }}" class="rounded" width=100 height=100 alt="{{ page.owner.get_full_name }}">
+            </td>
+            <td style="text-align:left;">
+                <div>
+                    Authored by : 
+                    <br/> <b>{{page.owner.get_full_name}} </b> 
+                    <br/> Published date: 
+                    <br/> <b>{{ page.last_published_at }} </b>
+                    
+                </div>
+             </td>
+            
+        </tr>
+    </tbody>
+</table>

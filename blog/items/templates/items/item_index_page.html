@@ -1,18 +1,82 @@
 {% extends "base.html" %}
 
-{% load wagtailcore_tags %}
 
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% block extra_css %}
+<!-- Bootstrap core CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"  crossorigin="anonymous">
+<!-- Bootstrap icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+
+{% endblock extra_css %}
 {% block body_class %}template-movieindexpage{% endblock %}
 
 {% block content %}
-    <h1>{{ page.title }}</h1>
+    <h1 align="center" class="mt-1">{{ page.title }}</h1>
+    <div class="d-flex flex-row flex-wrap align-items-start container-fluid  justify-content-center" style="">
 
-    <div class="intro">{{ page.intro|richtext }}</div>
+        {% for post in posts %}
+        
+            <div class="card m-2" style="width: 13rem;">
+                {% image post.specific.feed_image width-200 class="img-fluid card-img-top" height="100" id="bar" alt="poster" %}
+                <div class="card-body">
+                <a class="card-title text-decoration-none theme-color justify-content-center d-flex"  href="{% pageurl post %}">
+                    {{post.specific.title}}
+                </a>
+                <p class="card-text">
+                    {% for block in post.specific.intro %}
+                    {% include_block block.text %}
+                    {{block.title}}
+                    {% if block.block_type == "text" %}
+                        <div class="">
+                            {{ block|striptags|truncatechars:80 }}
+                        </div>
+                    {% endif %}
+                    {% endfor %} 
+                </div>
+            </div>
 
-    {% for post in page.get_children %}
-        <h2><a href="{% pageurl post %}">{{ post.title }}</a></h2>
-        {{ post.specific.intro }}
-        {{ post.specific.body|richtext }}
-    {% endfor %}
+        
+        {% endfor %}
 
+    </div>
+    {# Only show pagination if there is more than one page to click through #}
+  {% if posts.paginator.num_pages > 1 %}
+  <div class="container d-flex justify-content-center">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="pagination">
+          {% if posts.has_previous %}
+            <li class="page-item">
+              <a href="?page={{ posts.previous_page_number }}" class="page-link">
+                <span>&laquo;</span>
+              </a>
+            </li>
+          {% endif %}
+
+          {% for page_num in posts.paginator.page_range %}
+            <li class="page-item {% if page_num == posts.number %} active{% endif %}">
+              <a href="?page={{ page_num }}" class="page-link">
+                {{ page_num }}
+              </a>
+            </li>
+          {% endfor %}
+
+          {% if posts.has_next %}
+            <li class="page-item">
+              <a href="?page={{ posts.next_page_number }}" class="page-link">
+                <span>&raquo;</span>
+              </a>
+            </li>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
 {% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+{% endblock extra_js %}
