@@ -1,10 +1,13 @@
 from django.db import models
-
+from django.conf import settings
 from wagtail.models import Page
 from wagtail.fields import RichTextField
 from wagtail.admin.panels import FieldPanel
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from items.models import ItemPage
+
+from django.contrib.auth import get_user_model
+User=get_user_model()
 
 class HomePage(Page):
     body = RichTextField(blank=True)
@@ -20,13 +23,21 @@ class HomePage(Page):
         context = super().get_context(request, *args, **kwargs)
         # Get all posts
         #all_posts = ItemPage.objects.live().public().order_by('-first_published_at')
-        all_pages=self.get_children()
-        posts=[]
-        for page in all_pages:
-            page_posts=ItemPage.objects.live().public().order_by('-first_published_at').child_of(page)
-            for p in page_posts:
-                posts.append(p)
-            #posts.append(*page_posts)
+        
+        
+        posts=ItemPage.objects.live().public().order_by('-first_published_at')
+            
+
+        if request.GET.get('tag', None):
+            tags = request.GET.get('tag')
+            posts = posts.filter(tags__slug__in=[tags])
+            context['tag']=tags
+        if request.GET.get('author', None):
+            owner = request.GET.get('author')
+            user=User.objects.get(username=owner)
+            posts = posts.filter(owner=user)
+            context['author']=owner
+        
         # Paginate all posts by 2 per page
         paginator = Paginator(posts, 50)
         # Try to get the ?page=x value
@@ -45,4 +56,5 @@ class HomePage(Page):
         # "posts" will have child pages; you'll need to use .specific in the template
         # in order to access child properties, such as youtube_video_id and subtitle
         context["posts"] = posts
+        
         return context

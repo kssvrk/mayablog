@@ -13,7 +13,13 @@
 {% block body_class %}template-movieindexpage{% endblock %}
 
 {% block content %}
-    <h1 align="center" class="mt-1">{{ page.title }}</h1>
+    <h1 align="center" class="mt-2">
+        {{ page.title }} 
+    </h1>
+    <p align="center">
+        {% if tag  %} Tag : <b>{{tag}}</b> {%endif%}
+        {% if author  %} Author : <b>{{author}}</b> {%endif%}
+    </p>
     <div class="d-flex flex-row flex-wrap align-items-start container-fluid  justify-content-center" style="">
 
         {% for post in posts %}
