@@ -169,7 +169,7 @@ AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_KEY')
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 MEDIA_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
+CSRF_TRUSTED_ORIGINS = ['https://mayagram.com']
 # Wagtail settings
 
 WAGTAIL_SITE_NAME = "blog"
