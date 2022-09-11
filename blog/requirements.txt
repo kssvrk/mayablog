@@ -3,3 +3,4 @@ wagtail>=4.0,<4.1
 django-storages
 boto3
 gunicorn
+psycopg2-binary
