@@ -3,6 +3,8 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        {% block opengraph %}
+        {% endblock %}
         <meta charset="utf-8" />
         <title>
             {% block title %}
@@ -33,8 +35,9 @@
           background-color: #ecf0f1;
       }
 
-      .navbar{
+      .navbar , .theme-background{
           background-color: #e74c3c !important;
+          color:white;
       }
 
       .theme-color{

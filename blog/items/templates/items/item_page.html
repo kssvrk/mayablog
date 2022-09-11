@@ -2,6 +2,23 @@
 
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
+
+{% block opengraph %}
+    <meta content="{{page.title}}" property='og:title'/>
+    {% for block in page.intro %}
+        {% if block.block_type == "text" %}
+            <div class="">
+                <meta content="{{ block|striptags|truncatechars:80 }}" property="og:Description"/>
+                
+            </div>
+        {% endif %}
+    {% endfor %}
+    
+    <meta property="og:type" content= "article" />
+    {% image page.feed_image width-400  as page_image %}
+    <meta property="og:image" itemprop="image primaryImageOfPage" content="{{page_image.url}}" />
+{% endblock %}
+
 {% block extra_css %}
 <!-- Bootstrap core CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"  crossorigin="anonymous">
@@ -95,7 +112,11 @@
     </div>
 
     
-    <p><a href="{{ page.get_parent.url }}">Return to Movies</a></p>
+    <p class="d-flex justify-content-center">
+        <a href="{{ page.get_parent.url }}" type="button" class="btn theme-background">
+            Return to {{page.get_parent.title}}
+        </a>
+    </p>
 </div>
 
 
