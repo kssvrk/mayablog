@@ -10,7 +10,9 @@ https://docs.djangoproject.com/en/3.2/howto/deployment/wsgi/
 import os
 
 from django.core.wsgi import get_wsgi_application
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "blog.settings.dev")
+try:
+    os.getenv("DJANGO_SETTINGS_MODULE")
+except:
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "blog.settings.dev")
 
 application = get_wsgi_application()
