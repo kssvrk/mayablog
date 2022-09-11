@@ -6,7 +6,7 @@
                     {% for tag in page.tags.all %}
                     {# Loop through all the existing tags #}
                     <span class="badge fs-6 bg-secondary m-1">
-                        <a class="text-decoration-none text-white" href="/?tag={{ tag.slug }}">
+                        <a class="text-decoration-none text-white" target="_self" href="/?tag={{ tag.slug }}">
                             {{ tag }}
                         </a>
                     </span>
